@@ -107,7 +107,14 @@ private struct FileItems: View {
         Divider()
         Button("Open Address…") { selected.pressOpenAddress() }
             .shortcut(.openAddress)
-        Button("Paste and Go") { selected.pasteAndGo() }
+        Button("Paste and Go") {
+            // From its key, in a text field, the key is the text's
+            // (PasteStyleTarget.takesPasteAndGoKey). Chosen from the menu,
+            // by the pointer or by the arrows and Return, it goes.
+            if let event = NSApp.currentEvent, event.type == .keyDown, Keymap.shared.matches(event, .pasteAndGo),
+               PasteStyleTarget.takesPasteAndGoKey(in: NSApp.keyWindow) { return }
+            selected.pasteAndGo()
+        }
             .shortcut(.pasteAndGo)
         Divider()
         // Close Tab and Close Window in
